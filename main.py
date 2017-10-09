@@ -95,7 +95,7 @@ class FilterViolations(ApplicationLevelExtension):
                 
                 with open_source_file(_file.get_path()) as f:
 
-                    logging.debug('current file (%s) =[ %s ] ' % (CobolFileType, _file.get_path()))
+                    #logging.info('current file (%s) =[ %s ] ' % (CobolFileType, _file.get_path()))
 
                     begin_line = 0
                     current_line = 0
@@ -138,11 +138,11 @@ class FilterViolations(ApplicationLevelExtension):
                         user_code_violations.append(violation)
             
                 if (number_of_telon_LOC_in_current_file != 0):
-                    logging.debug('Number of TELON LOC in current file [%s]: %s on a total of %s LOC' % (_file.get_path(), number_of_telon_LOC_in_current_file, current_line))
+                    logging.info('Number of TELON LOC in current file [%s]: %s on a total of %s LOC' % (_file.get_path(), number_of_telon_LOC_in_current_file, current_line))
                     total_LOC += current_line
                     telon_LOC += number_of_telon_LOC_in_current_file
                 else: 
-                    logging.debug('File [%s] does not contain any Telon code, file LOC = %s' % (_file.get_path(), current_line))
+                    logging.info('File [%s] does not contain any Telon code, file LOC = %s' % (_file.get_path(), current_line))
                     total_LOC += current_line
 
             if is_telon:
@@ -158,7 +158,11 @@ class FilterViolations(ApplicationLevelExtension):
                 
             # et hop !
             
-        logging.info('Found %s TELON programs out of %s programs and %s copybooks' % (number_of_telon_programs, number_of_programs, number_of_cobol_copybooks))
-        logging.info('Kept %s violation bookmarks out of %s' % (number_of_kept_violations, number_of_violations))
-        logging.info('Number of TELON LOC : %s on a total of %s LOC, which means %s percent of generated LOC' % (telon_LOC, total_LOC, round(telon_LOC*100/total_LOC,2)))
-        logging.info("Done filtering violations")
+
+        if (total_LOC > 0): 
+            logging.info('Found %s TELON programs out of %s programs and %s copybooks' % (number_of_telon_programs, number_of_programs, number_of_cobol_copybooks))
+            logging.info('Kept %s violation bookmarks out of %s' % (number_of_kept_violations, number_of_violations))            
+            logging.info('Number of TELON LOC : %s on a total of %s LOC, which means %s percent of generated LOC' % (telon_LOC, total_LOC, round(telon_LOC*100/total_LOC,2)))
+            logging.info("Done filtering violations")
+        else: 
+            logging.info('*** No Cobol files analyzed, so no Telon code to filter')
